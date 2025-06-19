@@ -33,6 +33,9 @@ const bookSchema = new mongoose_1.Schema({
         type: Boolean,
         default: true
     }
+}, {
+    versionKey: false,
+    timestamps: true
 });
 exports.Book = (0, mongoose_1.model)("Book", bookSchema);
 // title (string) — Mandatory. The book’s title.

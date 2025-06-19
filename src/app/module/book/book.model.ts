@@ -34,6 +34,9 @@ available:{
     type: Boolean,
     default : true
 }
+},{
+    versionKey: false,
+    timestamps: true
 })
 
 export const Book = model<IBook>("Book",bookSchema)
