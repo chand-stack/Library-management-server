@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createBookService, getBooksService, getSingleBookService } from "./book.service"; 
+import { createBookService, getBooksService, getSingleBookService, updateBookService } from "./book.service"; 
 import mongoose from "mongoose";
 
 // create books controller
@@ -158,3 +158,55 @@ try {
     });
   }
 }
+
+// update book controller
+export const updateBook = async(req:Request,res:Response): Promise<any>=>{
+try {
+  const bookId = req.params.bookId
+  const newData = req.body
+  const updateBook = await updateBookService({_id: bookId},newData)
+  res.status(201).json({
+    
+    success: true,
+    message: "Book updated successfully",
+    data: updateBook
+  
+  })
+} catch (error:any) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      return res.status(400).json({
+        message: "Validation failed",
+        success: false,
+        error: {
+          name: error.name,
+          errors: error.errors,
+        },
+      });
+    }
+    if (error.code === 11000 && error.name === 'MongoServerError') {
+      const duplicatedField = Object.keys(error.keyValue)[0];
+      const duplicatedValue = error.keyValue[duplicatedField];
+      return res.status(409).json({
+        message: "Validation failed",
+        success: false,
+        error: {
+          name: "DuplicateKeyError",
+          errors: {
+            [duplicatedField]: {
+              message: `The ${duplicatedField} "${duplicatedValue}" already exists.`,
+              name: "DuplicateError",
+              kind: "unique",
+              path: duplicatedField,
+              value: duplicatedValue
+            }
+          }
+        }
+      });
+    }
+    return res.status(500).json({
+      message: "Something went wrong",
+      success: false,
+      error: error.message || error,
+    });
+  }
+} 

@@ -15,3 +15,8 @@ export const getSingleBookService = async (bookId : string)=>{
 const book = await Book.findById(bookId)
 return book
 }
+
+export const updateBookService = async (bookId : object, newData : object) => {
+      const updatedBook = await Book.findOneAndUpdate(bookId,newData,{new:true})
+      return updatedBook
+}

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSingleBook = exports.getBooks = exports.createBook = void 0;
+exports.updateBook = exports.getSingleBook = exports.getBooks = exports.createBook = void 0;
 const book_service_1 = require("./book.service");
 const mongoose_1 = __importDefault(require("mongoose"));
 // create books controller
@@ -172,3 +172,54 @@ const getSingleBook = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.getSingleBook = getSingleBook;
+// update book controller
+const updateBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const bookId = req.params.bookId;
+        const newData = req.body;
+        const updateBook = yield (0, book_service_1.updateBookService)({ _id: bookId }, newData);
+        res.status(201).json({
+            success: true,
+            message: "Book updated successfully",
+            data: updateBook
+        });
+    }
+    catch (error) {
+        if (error instanceof mongoose_1.default.Error.ValidationError) {
+            return res.status(400).json({
+                message: "Validation failed",
+                success: false,
+                error: {
+                    name: error.name,
+                    errors: error.errors,
+                },
+            });
+        }
+        if (error.code === 11000 && error.name === 'MongoServerError') {
+            const duplicatedField = Object.keys(error.keyValue)[0];
+            const duplicatedValue = error.keyValue[duplicatedField];
+            return res.status(409).json({
+                message: "Validation failed",
+                success: false,
+                error: {
+                    name: "DuplicateKeyError",
+                    errors: {
+                        [duplicatedField]: {
+                            message: `The ${duplicatedField} "${duplicatedValue}" already exists.`,
+                            name: "DuplicateError",
+                            kind: "unique",
+                            path: duplicatedField,
+                            value: duplicatedValue
+                        }
+                    }
+                }
+            });
+        }
+        return res.status(500).json({
+            message: "Something went wrong",
+            success: false,
+            error: error.message || error,
+        });
+    }
+});
+exports.updateBook = updateBook;

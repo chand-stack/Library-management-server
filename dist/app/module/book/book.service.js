@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSingleBookService = exports.getBooksService = exports.createBookService = void 0;
+exports.updateBookService = exports.getSingleBookService = exports.getBooksService = exports.createBookService = void 0;
 const book_model_1 = require("./book.model");
 const createBookService = (book) => __awaiter(void 0, void 0, void 0, function* () {
     const newBook = yield book_model_1.Book.create(book);
@@ -26,3 +26,8 @@ const getSingleBookService = (bookId) => __awaiter(void 0, void 0, void 0, funct
     return book;
 });
 exports.getSingleBookService = getSingleBookService;
+const updateBookService = (bookId, newData) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatedBook = yield book_model_1.Book.findOneAndUpdate(bookId, newData, { new: true });
+    return updatedBook;
+});
+exports.updateBookService = updateBookService;
