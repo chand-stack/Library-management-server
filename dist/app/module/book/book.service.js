@@ -9,25 +9,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateBookService = exports.getSingleBookService = exports.getBooksService = exports.createBookService = void 0;
+exports.deleteBookService = exports.updateBookService = exports.getSingleBookService = exports.getBooksService = exports.createBookService = void 0;
 const book_model_1 = require("./book.model");
+// create book service
 const createBookService = (book) => __awaiter(void 0, void 0, void 0, function* () {
     const newBook = yield book_model_1.Book.create(book);
     return newBook;
 });
 exports.createBookService = createBookService;
+// get book service
 const getBooksService = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const allBooks = yield book_model_1.Book.find({ genre: query === null || query === void 0 ? void 0 : query.filter }).sort({ createdAt: query === null || query === void 0 ? void 0 : query.sort }).limit(query.limit);
+    const filter = {};
+    const sorting = {};
+    if (query.filter) {
+        filter.genre = query.filter;
+    }
+    if (query.sortBy && query.sort) {
+        sorting[query.sortBy] = query.sort === "asc" ? 1 : -1;
+    }
+    let queryBuilder = book_model_1.Book.find(filter);
+    if (Object.keys(sorting).length > 0) {
+        queryBuilder = queryBuilder.sort(sorting);
+    }
+    if (query.limit && Number(query.limit) > 0) {
+        queryBuilder = queryBuilder.limit(Number(query.limit));
+    }
+    const allBooks = yield queryBuilder;
     return allBooks;
 });
 exports.getBooksService = getBooksService;
+// get single book service
 const getSingleBookService = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
     const book = yield book_model_1.Book.findById(bookId);
     return book;
 });
 exports.getSingleBookService = getSingleBookService;
+// update book service
 const updateBookService = (bookId, newData) => __awaiter(void 0, void 0, void 0, function* () {
     const updatedBook = yield book_model_1.Book.findOneAndUpdate(bookId, newData, { new: true });
     return updatedBook;
 });
 exports.updateBookService = updateBookService;
+// delete book service
+const deleteBookService = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
+    const deleteBook = yield book_model_1.Book.findByIdAndDelete(bookId);
+    return deleteBook;
+});
+exports.deleteBookService = deleteBookService;
