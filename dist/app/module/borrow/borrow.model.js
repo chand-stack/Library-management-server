@@ -14,7 +14,7 @@ const mongoose_1 = require("mongoose");
 const book_model_1 = require("../book/book.model");
 const borrowSchema = new mongoose_1.Schema({
     book: {
-        type: String,
+        type: mongoose_1.Schema.Types.ObjectId,
         required: [true, "Book id is required."]
     },
     dueDate: {

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createBorrowService = void 0;
+exports.getAllBorrowService = exports.createBorrowService = void 0;
 const book_model_1 = require("../book/book.model");
 const borrow_model_1 = require("./borrow.model");
 const createBorrowService = (book, quantity, dueDate) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,3 +34,40 @@ const createBorrowService = (book, quantity, dueDate) => __awaiter(void 0, void 
     return createBorrow;
 });
 exports.createBorrowService = createBorrowService;
+const getAllBorrowService = () => __awaiter(void 0, void 0, void 0, function* () {
+    const borrowedBooks = yield borrow_model_1.Borrow.aggregate([
+        // 1st stage
+        {
+            $group: { _id: "$book", totalQuantity: { $sum: "$quantity" } }
+        },
+        // 2nd stage
+        {
+            $lookup: {
+                from: "books",
+                localField: "_id",
+                foreignField: "_id",
+                as: "bookDetails"
+            }
+        },
+        // 3rd stage
+        {
+            $unwind: {
+                path: "$bookDetails",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        // 4th stage
+        {
+            $project: {
+                book: {
+                    title: "$bookDetails.title",
+                    isbn: "$bookDetails.isbn",
+                },
+                totalQuantity: 1,
+                _id: 0,
+            }
+        }
+    ]);
+    return borrowedBooks;
+});
+exports.getAllBorrowService = getAllBorrowService;

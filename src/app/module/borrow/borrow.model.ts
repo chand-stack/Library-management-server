@@ -4,7 +4,7 @@ import { Book } from "../book/book.model";
 
 const borrowSchema = new Schema<IBorrow>({
     book:{
-        type: String,
+        type: Schema.Types.ObjectId,
         required : [true, "Book id is required."]
     },
     dueDate:{
