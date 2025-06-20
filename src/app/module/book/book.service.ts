@@ -5,3 +5,8 @@ export const createBookService = async (book : object)=>{
       return newBook
 }
 
+export const getBooksService = async(query : any)=>{
+      
+      const allBooks = await Book.find({genre: query?.filter}).sort({createdAt:query?.sort}).limit(query.limit)
+      return allBooks
+}
