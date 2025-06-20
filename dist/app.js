@@ -6,11 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const book_routes_1 = require("./app/module/book/book.routes");
+const borrow_routes_1 = require("./app/module/borrow/borrow.routes");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)());
 app.use(book_routes_1.bookRoutes);
+app.use(borrow_routes_1.borrowRoutes);
 app.get('/', (req, res) => {
     try {
         res.json({
