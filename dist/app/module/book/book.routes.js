@@ -6,3 +6,4 @@ const book_controller_1 = require("./book.controller");
 exports.bookRoutes = (0, express_1.Router)();
 exports.bookRoutes.post("/api/books", book_controller_1.createBook);
 exports.bookRoutes.get("/api/books", book_controller_1.getBooks);
+exports.bookRoutes.get("/api/books/:bookId", book_controller_1.getSingleBook);

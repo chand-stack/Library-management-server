@@ -10,3 +10,8 @@ export const getBooksService = async(query : any)=>{
       const allBooks = await Book.find({genre: query?.filter}).sort({createdAt:query?.sort}).limit(query.limit)
       return allBooks
 }
+
+export const getSingleBookService = async (bookId : string)=>{
+const book = await Book.findById(bookId)
+return book
+}
