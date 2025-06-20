@@ -4,6 +4,7 @@ import { bookRoutes } from "./app/module/book/book.routes"
 const app : Application = express()
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 
 app.use(bookRoutes)

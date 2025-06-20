@@ -4,40 +4,43 @@ import { IBook } from "./book.interface";
 
 
 const bookSchema = new Schema<IBook>({
-title : {
+  title: {
     type: String,
-    required : true
-},
-author:{
+    required: [true, "Book title is required."]
+  },
+  author: {
     type: String,
-    required : true
-},
-genre:{
+    required: [true, "Author name is required."]
+  },
+  genre: {
     type: String,
-    required : true,
-    enum:["FICTION", "NON_FICTION", "SCIENCE", "HISTORY", "BIOGRAPHY", "FANTASY"],
-},
-isbn:{
+    required: [true, "Genre is required."],
+    enum: {
+      values: ["FICTION", "NON_FICTION", "SCIENCE", "HISTORY", "BIOGRAPHY", "FANTASY"],
+      message: "Genre must be one of: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, or FANTASY."
+    }
+  },
+  isbn: {
     type: String,
-    required : true,
-    unique : true
-},
-description:{
-type: String
-},
-copies:{
+    required: [true, "ISBN is required."],
+    unique: true
+  },
+  description: {
+    type: String
+  },
+  copies: {
     type: Number,
-    min:0,
-    required : true
-},
-available:{
+    min: [0, "Number of copies cannot be negative."],
+    required: [true, "Number of copies is required."]
+  },
+  available: {
     type: Boolean,
-    default : true
-}
-},{
-    versionKey: false,
-    timestamps: true
-})
+    default: true
+  }
+}, {
+  versionKey: false,
+  timestamps: true
+});
 
 export const Book = model<IBook>("Book",bookSchema)
 

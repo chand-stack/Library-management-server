@@ -5,20 +5,23 @@ const mongoose_1 = require("mongoose");
 const bookSchema = new mongoose_1.Schema({
     title: {
         type: String,
-        required: true
+        required: [true, "Book title is required."]
     },
     author: {
         type: String,
-        required: true
+        required: [true, "Author name is required."]
     },
     genre: {
         type: String,
-        required: true,
-        enum: ["FICTION", "NON_FICTION", "SCIENCE", "HISTORY", "BIOGRAPHY", "FANTASY"],
+        required: [true, "Genre is required."],
+        enum: {
+            values: ["FICTION", "NON_FICTION", "SCIENCE", "HISTORY", "BIOGRAPHY", "FANTASY"],
+            message: "Genre must be one of: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, or FANTASY."
+        }
     },
     isbn: {
         type: String,
-        required: true,
+        required: [true, "ISBN is required."],
         unique: true
     },
     description: {
@@ -26,8 +29,8 @@ const bookSchema = new mongoose_1.Schema({
     },
     copies: {
         type: Number,
-        min: 0,
-        required: true
+        min: [0, "Number of copies cannot be negative."],
+        required: [true, "Number of copies is required."]
     },
     available: {
         type: Boolean,
