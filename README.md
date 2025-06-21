@@ -28,7 +28,7 @@ Before running the application, ensure you have the following installed:
 Clone the repository to your local machine:
 
 ```
-https://github.com/chand-stack/Library-management-server.git
+git clone https://github.com/chand-stack/Library-management-server.git
 
 cd Library-management-server
 ```
