@@ -8,7 +8,7 @@ export const createBookService = async (book : object)=>{
 
 // get book service
 export const getBooksService = async(query : any)=>{
-    const filter: any = {};
+  const filter: any = {};
   const sorting: any = {};
 
   if (query.filter) {
@@ -25,9 +25,9 @@ export const getBooksService = async(query : any)=>{
     queryBuilder = queryBuilder.sort(sorting);
   }
 
-  if (query.limit && Number(query.limit) > 0) {
-    queryBuilder = queryBuilder.limit(Number(query.limit));
-  }
+  const limit = query.limit && Number(query.limit) > 0 ? Number(query.limit) : 10;
+  queryBuilder = queryBuilder.limit(limit);
+
   const allBooks = await queryBuilder;
   return allBooks;
 }

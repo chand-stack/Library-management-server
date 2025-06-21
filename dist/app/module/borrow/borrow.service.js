@@ -27,8 +27,8 @@ const createBorrowService = (book, quantity, dueDate) => __awaiter(void 0, void 
     if (!findBook.available) {
         throw new Error("Book is currently unavailable");
     }
-    const newCopies = findBook.copies - quantity;
-    yield book_model_1.Book.findByIdAndUpdate(book, { copies: newCopies });
+    // const newCopies = findBook.copies - quantity
+    // await Book.findByIdAndUpdate(book,{copies:newCopies})
     const createBorrow = yield borrow_model_1.Borrow.create({ book, quantity, dueDate });
     yield createBorrow.updateBook(book);
     return createBorrow;

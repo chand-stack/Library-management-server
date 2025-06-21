@@ -20,8 +20,8 @@ const findBook = await Book.findById(book)
     throw new Error("Book is currently unavailable");
   }
   
-const newCopies = findBook.copies - quantity
-await Book.findByIdAndUpdate(book,{copies:newCopies})
+// const newCopies = findBook.copies - quantity
+// await Book.findByIdAndUpdate(book,{copies:newCopies})
 
 const createBorrow = await Borrow.create({book,quantity,dueDate})
 
