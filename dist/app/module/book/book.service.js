@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBookService = exports.updateBookService = exports.getSingleBookService = exports.getBooksService = exports.createBookService = void 0;
+const borrow_model_1 = require("../borrow/borrow.model");
 const book_model_1 = require("./book.model");
 // create book service
 const createBookService = (book) => __awaiter(void 0, void 0, void 0, function* () {
@@ -18,22 +19,27 @@ const createBookService = (book) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.createBookService = createBookService;
 // get book service
-const getBooksService = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const filter = {};
-    const sorting = {};
-    if (query.filter) {
-        filter.genre = query.filter;
-    }
-    if (query.sortBy && query.sort) {
-        sorting[query.sortBy] = query.sort === "asc" ? 1 : -1;
-    }
-    let queryBuilder = book_model_1.Book.find(filter);
-    if (Object.keys(sorting).length > 0) {
-        queryBuilder = queryBuilder.sort(sorting);
-    }
-    const limit = query.limit && Number(query.limit) > 0 ? Number(query.limit) : 10;
-    queryBuilder = queryBuilder.limit(limit);
-    const allBooks = yield queryBuilder;
+// export const getBooksService = async (query: any) => {
+//   const filter: any = {};
+//   const sorting: any = {};
+//   if (query.filter) {
+//     filter.genre = query.filter;
+//   }
+//   if (query.sortBy && query.sort) {
+//     sorting[query.sortBy] = query.sort === "asc" ? 1 : -1;
+//   }
+//   let queryBuilder = Book.find(filter);
+//   if (Object.keys(sorting).length > 0) {
+//     queryBuilder = queryBuilder.sort(sorting);
+//   }
+//   if (query.limit && Number(query.limit) > 0) {
+//     queryBuilder = queryBuilder.limit(Number(query.limit));
+//   }
+//   const allBooks = await queryBuilder;
+//   return allBooks;
+// };
+const getBooksService = () => __awaiter(void 0, void 0, void 0, function* () {
+    const allBooks = yield book_model_1.Book.find({});
     return allBooks;
 });
 exports.getBooksService = getBooksService;
@@ -46,12 +52,19 @@ exports.getSingleBookService = getSingleBookService;
 // update book service
 const updateBookService = (bookId, newData) => __awaiter(void 0, void 0, void 0, function* () {
     const updatedBook = yield book_model_1.Book.findOneAndUpdate(bookId, newData, { new: true });
+    // Ensure the book exists before calling the method
+    if (updatedBook && typeof updatedBook.updateBook === "function") {
+        yield updatedBook.updateBook(updatedBook._id.toString()); // instance method
+    }
     return updatedBook;
 });
 exports.updateBookService = updateBookService;
 // delete book service
 const deleteBookService = (bookId) => __awaiter(void 0, void 0, void 0, function* () {
-    const deleteBook = yield book_model_1.Book.findByIdAndDelete(bookId);
-    return deleteBook;
+    // Delete the book
+    const deletedBook = yield book_model_1.Book.findByIdAndDelete(bookId);
+    // Delete all borrows related to this book
+    yield borrow_model_1.Borrow.deleteMany({ book: bookId });
+    return deletedBook;
 });
 exports.deleteBookService = deleteBookService;

@@ -52,22 +52,69 @@ try {
 }
 
 // get all books controller
-export const getBooks = async (req:Request,res:Response) : Promise<any> =>{
-try {
-const query = {
-  filter: req.query.filter,
-  sortBy: req.query.sortBy,
-  sort: req.query.sort,
-  limit: req.query.limit ? Number(req.query.limit) : undefined,
-};
+
+// export const getBooks = async (req:Request,res:Response) : Promise<any> =>{
+// try {
+//   let query  = {
+//     filter : req?.query?.filter ,
+//     sortBy : req?.query?.sortBy ,
+//     sort: req?.query?.sort ,
+//     limit: Number(req?.query?.limit)
+//   }
   
-  const allBooks = await getBooksService(query)
-  res.status(201).json({
-    success: true,
-    message: "Books retrieved successfully",
-    data: allBooks
-  })
-} catch (error: any) {
+//   const allBooks = await getBooksService(query)
+//   res.status(201).json({
+//     success: true,
+//     message: "Books retrieved successfully",
+//     data: allBooks
+//   })
+// } catch (error: any) {
+//     if (error instanceof mongoose.Error.ValidationError) {
+//       return res.status(400).json({
+//         message: "Validation failed",
+//         success: false,
+//         error: {
+//           name: error.name,
+//           errors: error.errors,
+//         },
+//       });
+//     }
+//     if (error.code === 11000 && error.name === 'MongoServerError') {
+//       const duplicatedField = Object.keys(error.keyValue)[0];
+//       const duplicatedValue = error.keyValue[duplicatedField];
+//       return res.status(409).json({
+//         message: "Validation failed",
+//         success: false,
+//         error: {
+//           name: "DuplicateKeyError",
+//           errors: {
+//             [duplicatedField]: {
+//               message: The ${duplicatedField} "${duplicatedValue}" already exists.,
+//               name: "DuplicateError",
+//               kind: "unique",
+//               path: duplicatedField,
+//               value: duplicatedValue
+//             }
+//           }
+//         }
+//       });
+//     }
+//     return res.status(500).json({
+//       message: "Something went wrong",
+//       success: false,
+//       error: error.message || error,
+//     });
+//   }
+// } 
+export const getBooks = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const allBooks = await getBooksService();
+    res.status(200).json({
+      success: true,
+      message: "Books retrieved successfully",
+      data: allBooks,
+    });
+  } catch (error: any) {
     if (error instanceof mongoose.Error.ValidationError) {
       return res.status(400).json({
         message: "Validation failed",
@@ -78,7 +125,7 @@ const query = {
         },
       });
     }
-    if (error.code === 11000 && error.name === 'MongoServerError') {
+    if (error.code === 11000 && error.name === "MongoServerError") {
       const duplicatedField = Object.keys(error.keyValue)[0];
       const duplicatedValue = error.keyValue[duplicatedField];
       return res.status(409).json({
@@ -92,10 +139,10 @@ const query = {
               name: "DuplicateError",
               kind: "unique",
               path: duplicatedField,
-              value: duplicatedValue
-            }
-          }
-        }
+              value: duplicatedValue,
+            },
+          },
+        },
       });
     }
     return res.status(500).json({
@@ -104,7 +151,7 @@ const query = {
       error: error.message || error,
     });
   }
-} 
+};
 
 
 // get single book controller

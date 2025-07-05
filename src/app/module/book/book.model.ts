@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IBook } from "./book.interface";
+import { BookModel, IBook } from "./book.interface";
 
 
 
@@ -42,9 +42,19 @@ const bookSchema = new Schema<IBook>({
   timestamps: true
 });
 
+// Instance method
+bookSchema.method("updateBook", async function (bookId: string) {
+  const findBook = await Book.findById(bookId);
+  if (!findBook) return;
 
+  if (findBook.copies > 0 && !findBook.available) {
+    await Book.findByIdAndUpdate(bookId, { available: true });
+  } else if (findBook.copies === 0 && findBook.available) {
+    await Book.findByIdAndUpdate(bookId, { available: false });
+  }
+});
 
-export const Book = model<IBook>("Book",bookSchema)
+export const Book = model<IBook,BookModel>("Book",bookSchema)
 
 
 
